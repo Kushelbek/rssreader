@@ -21,26 +21,22 @@ require_once $cfg['plugins_dir'] . '/rssreader/inc/lastrss.php';
 function cot_rss_parse($rss_url, $rss_count=20, $tpl = "", $charset = "UTF-8", $htmlsave = true)
 {
 	global $cfg, $cache;
-	$code = md5($rss_url . $rss_count . $tpl . $charset . $htmlsave);
-	
-	if($RSSREADER.$code)
-	{
-		return $RSSREADER.$code;
-	}	
-	if (mb_strpos($rss_url, 'http://') !== 0)
+
+
+	if (mb_strpos($rss_url, 'http') !== 0)
 	{
 		$rss_url = 'http://' . $rss_url;
 	}
 	$jj = 0;
 
-	$readrss = new XTemplate(cot_tplfile($tpl, 'plug'));
+	$readrss = new XTemplate(cot_tplfile('rssreader'.$tpl, 'plug'));
 
 	// create lastRSS object
 	$rss = new lastRSS;
 
 	// setup transparent cache
-	$rss->cache_dir = $cfg['cache_dir']."\rssreader";
-	$rss->cache_time = 14400;
+	$cache && $rss->cache_dir = $cfg['cache_dir']."\rssreader";
+	$cache && $rss->cache_time = 14400;
 	$rss->items_limit = $rss_count;
 	$rss->date_format = $cfg['formatyearmonthday'];
 	if (!$htmlsave)
@@ -93,7 +89,5 @@ function cot_rss_parse($rss_url, $rss_count=20, $tpl = "", $charset = "UTF-8", $
 	}
 
 	$readrss->parse("MAIN");
-	$text = $readrss->text("MAIN");
-
-	$cache && $cache->db->store('RSSREADER'.$code, $text, 'system', 3 * 3600);
+	return $readrss->text("MAIN");
 }
