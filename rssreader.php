@@ -18,16 +18,22 @@ defined('COT_CODE') or die('Wrong URL');
 
 require_once $cfg['plugins_dir'] . '/rssreader/inc/lastrss.php';
 
-function cot_rss_parse($rss_url, $rss_count, $skinfile, $charset = "UTF-8", $htmlsave = 1)
+function cot_rss_parse($rss_url, $rss_count=20, $tpl = "", $charset = "UTF-8", $htmlsave = true)
 {
-	global $cfg;
+	global $cfg, $cache;
+	$code = md5($rss_url . $rss_count . $tpl . $charset . $htmlsave);
+	
+	if($RSSREADER.$code)
+	{
+		return $RSSREADER.$code;
+	}	
 	if (mb_strpos($rss_url, 'http://') !== 0)
 	{
 		$rss_url = 'http://' . $rss_url;
 	}
 	$jj = 0;
 
-	$readrss = new XTemplate(cot_tplfile($skinfile, 'plug'));
+	$readrss = new XTemplate(cot_tplfile($tpl, 'plug'));
 
 	// create lastRSS object
 	$rss = new lastRSS;
@@ -87,26 +93,7 @@ function cot_rss_parse($rss_url, $rss_count, $skinfile, $charset = "UTF-8", $htm
 	}
 
 	$readrss->parse("MAIN");
+	$text = $readrss->text("MAIN");
 
-	return $readrss->text("MAIN");
-}
-
-if (!is_array($RSSREADER))
-{
-	$categories = explode("\n", $cfg['plugin']['rssreader']['category']);
-
-	foreach ($categories as $k => $v)
-	{
-		$v = trim($v);
-		$v = explode('|', $v);
-		$v[2] = (int) $v[2] > 0 ? $v[2] : $cfg['maxrowsperpage'];
-		if (!empty($v[0]) && !empty($v[1]))
-		{
-			$RSSREADER[strtoupper($v[0])] = cot_rss_parse($v[1], $v[2], 'rssreader.' . $v[0] . '.tpl', $v[3], $v[4]);
-		}
-	}
-	/* @var $db CotDB */
-	/* @var $cache Cache */
-	/* @var $t Xtemplate */
-	$cache && $cache->db->store('RSSREADER', $RSSREADER, 'system', 3 * 3600);
+	$cache && $cache->db->store('RSSREADER'.$code, $text, 'system', 3 * 3600);
 }
