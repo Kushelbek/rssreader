@@ -65,6 +65,7 @@ function cot_rss_parse($rss_url, $rss_count=20, $tpl = "", $charset = "UTF-8", $
 				"RSS_LINK" => $item[link],
 				"RSS_TITLE" => $item['title'],
 				"RSS_DATE" => $item['pubDate'],
+				"RSS_DATESTAMP" => $item['pubDateStamp'],
 				"RSS_DESCRIPTION" => $item['description'],
 				"RSS_CAT" => $item['category'],
 				"RSS_COMMENTS" => $item['comments'],
