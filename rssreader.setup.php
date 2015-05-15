@@ -10,6 +10,7 @@
  * Author=esclkm, Vojtech Semecky
  * Copyright=&copy; esclkm, http://www.littledev.ru 2012
  * Notes=Use rss parser class lastrss http://lastrss.oslab.net/
+ * Category=misc-ext
  * Auth_guests=R
  * Lock_guests=W12345A
  * Auth_members=R
