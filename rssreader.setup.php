@@ -14,6 +14,10 @@
  * Lock_guests=W12345A
  * Auth_members=R
  * Lock_members=W12345A
+ Recommends_modules=page,forums,comments
+ Recommends_plugins=page,forums,comments
+ Requires_modules=page,forums,comments
+ Requires_plugins=page,forums,comments
  * [END_COT_EXT]
 ==================== */
 
